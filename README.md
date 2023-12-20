@@ -1,4 +1,7 @@
-## Multi_pose face image generation by modifying latent space<br>
+## Multi_pose face image generation by modifying latent space<be>
+<img width="446" alt="multi_view" src="https://github.com/hrx000/instance-segmentation-using-MASK-R-CNN/assets/51284717/8b9e95e2-dd57-4a8c-a94d-62162ad28ea9">
+
+
 
 
 Abstract: *Synthesis and reconstruction of 3D human head has gained increasing interest in computer vision and computer graphics recently. Existing state-of-the-art 3D generative adversarial networks (GANs) for 3D human head synthesis are either limited to near-frontal views or hard to preserve 3D consistency in large view angles. We propose a new method, the first 3D-aware generative model that enables high-quality view-consistent image synthesis of full heads in 360° with diverse appearance and detailed geometry using only in-the-wild unstructured images for training. At its core, we lift up the representation power of recent 3D GANs and bridge the data alignment gap when training from in-the-wild images with widely distributed views. Specifically, we propose a novel two-stage self-adaptive image alignment for robust 3D GAN training.
