@@ -1,6 +1,7 @@
-# HairStep: Transfer Synthetic to Real Using Strand and Depth Maps for Single-View 3D Hair Modeling (CVPR2023 Highlight) [<a href="https://paulyzheng.github.io/research/hairstep/" target="__blank">Projectpage</a>]
+# 3D Hair Reconstruction: Transfer Synthetic to Real Using Strand and Depth Maps for Single-View 3D Hair Modeling 
+<img width="479" alt="hai3d" src="https://github.com/hrx000/instance-segmentation-using-MASK-R-CNN/assets/51284717/5f5202a1-a11f-4d94-b0c0-80ba6e4b815d">
 
-<p align="center"><img src="docs/teaser.jpg"/></p></br>
+
 
 ## Dataset
 All data of HiSa & HiDa is hosted on Google Drive:
@@ -23,7 +24,7 @@ All data of HiSa & HiDa is hosted on Google Drive:
 | &boxvr;&nbsp; [split_train.json](https://drive.google.com/open?id=1-9cZxp1KsJu9PUZpc4It6reihWxRrdV6) | 1 | JSON | Split file for training
 | &boxur;&nbsp; [split_test.json](https://drive.google.com/open?id=1-EVSNXbfXhaiAxGSDq1tmaNz_pdqaFdm) | 1 | JSON | Split file for testing
 
-**The HiSa & HiDa dataset and pre-trained checkpoints based on it are available for non-commercial research purposes only**. All real images are collected from the Internet. Please contact [Yujian Zheng](https://paulyzheng.github.io/about/) and [Xiaoguang Han](https://gaplab.cuhk.edu.cn/) for questions about the dataset.
+**The HiSa & HiDa dataset and pre-trained checkpoints based on it are available for non-commercial research purposes only**.
 
 ## Installation
   ```
@@ -58,28 +59,6 @@ Download checkpoints of [3D networks](https://drive.google.com/file/d/1-akuukaYY
   ```
 Results will be saved in ./results/real_imgs/.
 
-## TODO
-- [x] Share the HiSa & HiDa datasets
-- [x] Release the code for converting images to HairStep
-- [x] Release the code for reconstructing 3D strands from HairStep
-- [ ] Release the code for computing metrics HairSale & HairRida (within a few days)
-- [ ] Release the code for training and data pre-processing (later)
-
-**Note**: A more compact and efficient sub-module for 3D hair reconstruction has been released, which has comparable performance to NeuralHDHair* reported in the paper.
-
-The original hair matting approach is provided by Kuaishou Technology, which cannot be released. The substitute method based on SAM fails sometimes.
-
-## Citation
-Please cite our paper as below if you find this repository is helpful:
-```
-@inproceedings{zheng2023hairstep,
-  title={Hairstep: Transfer synthetic to real using strand and depth maps for single-view 3d hair modeling},
-  author={Zheng, Yujian and Jin, Zirong and Li, Moran and Huang, Haibin and Ma, Chongyang and Cui, Shuguang and Han, Xiaoguang},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={12726--12735},
-  year={2023}
-}
-```
 
 ## Acknowledgements
-This repository is based on some excellent works, such as [HairNet](https://github.com/papagina/HairNet_DataSetGeneration), [PIFu](https://github.com/shunsukesaito/PIFu), [3DDFA_V2](https://github.com/cleardusk/3DDFA_V2), [SAM](https://github.com/facebookresearch/segment-anything) and [Depth-in-the-wild](https://github.com/yifjiang/relative-depth-using-pytorch). Many thanks.
+This repository is based on some excellent works of MetaBrix Lab.
