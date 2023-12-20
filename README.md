@@ -1,123 +1,360 @@
-## Multi_pose face image generation by modifying latent space<be>
-<img width="446" alt="multi_view" src="https://github.com/hrx000/instance-segmentation-using-MASK-R-CNN/assets/51284717/8b9e95e2-dd57-4a8c-a94d-62162ad28ea9">
+# HairMapper: Removing Hair from Portraits Using GANs
 
+HairMapper is a hair-removal network that can be applied in hair design and 3D face reconstruction.
 
+![hairmapper](./imgs/hairmapper.png)
 
+Published in **[2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition](https://cvpr2022.thecvf.com/) (CVPR’2022)**
 
-Abstract: *Synthesis and reconstruction of 3D human head has gained increasing interest in computer vision and computer graphics recently. Existing state-of-the-art 3D generative adversarial networks (GANs) for 3D human head synthesis are either limited to near-frontal views or hard to preserve 3D consistency in large view angles. We propose a new method, the first 3D-aware generative model that enables high-quality view-consistent image synthesis of full heads in 360° with diverse appearance and detailed geometry using only in-the-wild unstructured images for training. At its core, we lift up the representation power of recent 3D GANs and bridge the data alignment gap when training from in-the-wild images with widely distributed views. Specifically, we propose a novel two-stage self-adaptive image alignment for robust 3D GAN training.
+[Yiqian Wu](https://onethousandwu.com/), [Yongliang Yang](http://www.yongliangyang.net/), [Xiaogang Jin*](http://www.cad.zju.edu.cn/home/jin)
+
+[[Paper (4.21MB)]](http://www.cad.zju.edu.cn/home/jin/cvpr2022/HairMapper.pdf )    [[Video (46.7MB)]](http://www.cad.zju.edu.cn/home/jin/cvpr2022/demo.mp4 )    [[Suppl (4.42M)]](http://www.cad.zju.edu.cn/home/jin/cvpr2022/Supplementary_Materials.pdf)    [[Project Page]](http://www.cad.zju.edu.cn/home/jin/cvpr2022/cvpr2022.htm)
+
+[[Paper-high resolution (25.8MB)]](https://drive.google.com/file/d/18DDvis0ABiN0ibnAuZePLrN5SjhIeuRR/view?usp=sharing )  [[Suppl-high resolution (16.4M)]](https://drive.google.com/file/d/1_hXrqicomEi79Tm52CKgNamezgWlykDh/view?usp=sharing)  
+
+**Abstract:**
+
+Removing hair from portrait images is challenging due to the complex occlusions between hair and face, as well as the lack of paired portrait data with/without hair. To this end, we present a dataset and a baseline method for removing hair from portrait images using generative adversarial networks (GANs). Our core idea is to train a fully connected network **HairMapper** to find the direction of hair removal in the latent space of StyleGAN for the training stage. We develop a new separation boundary and diffuse method to generate paired training data for males, and a novel ''female-male-bald'' pipeline for paired data of females. Experiments show that our method can naturally deal with portrait images with variations on gender, age, etc. We validate the superior performance of our method by comparing it to state-of-the-art methods through extensive experiments and user studies. We also demonstrate its applications in hair design and 3D face reconstruction.
+
+## License
+
+**You can use, redistribute, and adapt this software for NON-COMMERCIAL purposes only**.
+
+## Demo
+
+ [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/oneThousand1000/HairMapper/blob/master/notebooks/HairMapper.ipynb)
+
 
 
 ## Requirements
 
-* We recommend Linux for performance and compatibility reasons.
-* 1&ndash;8 high-end NVIDIA GPUs. We have done all testing and development using V100, RTX3090, and A100 GPUs.
-* 64-bit Python 3.8 and PyTorch 1.11.0 (or later). See https://pytorch.org for PyTorch install instructions.
-* CUDA toolkit 11.3 or later.  
-* Python libraries: see [environment.yml](./environment.yml) for exact library dependencies.  You can use the following commands with Miniconda3 to create and activate your Python environment:
-  - `cd multi_pose`
-  - `conda env create -f environment.yml`
-  - `conda activate multi_pose`
+1. Windows (not tested on Linux yet)
+2. Python 3.7
+3. NVIDIA GPU + CUDA11.1 + CuDNN
+
+# Install
+
+1. ```bash
+   git clone git@github.com:oneThousand1000/HairMapper.git
+   ```
+   
+1. Download the following pretrained models, put each of them to **path**:
+
+   | model                                                        | path                               |
+   | ------------------------------------------------------------ | ---------------------------------- |
+   | [StyleGAN2-ada-Generator.pth](https://drive.google.com/file/d/1EsGehuEdY4z4t21o2LgW2dSsyN3rxYLJ/view?usp=sharing) | ./ckpts                            |
+   | [e4e_ffhq_encode.pt](https://drive.google.com/file/d/1cUv_reLE6k3604or78EranS7XzuVMWeO/view) | ./ckpts                            |
+   | [model_ir_se50.pth](https://drive.google.com/file/d/1GIMopzrt2GE_4PG-_YxmVqTQEiaqu5L6/view?usp=sharing) | ./ckpts                            |
+   | [face_parsing.pth](https://drive.google.com/file/d/1IMsrkXA9NuCEy1ij8c8o6wCrAxkmjNPZ/view?usp=sharing) | ./ckpts                            |
+   | [vgg16.pth](https://drive.google.com/file/d/1EPhkEP_1O7ZVk66aBeKoFqf3xiM4BHH8/view?usp=sharing) | ./ckpts                            |
+   | [classification_model.pth](https://drive.google.com/file/d/1SSw6vd-25OGnLAE0kuA-_VHabxlsdLXL/view?usp=sharing) | ./classifier/gender_classification |
+   | [classification_model.pth](https://drive.google.com/file/d/1n14ckDcgiy7eu-e9XZhqQYb5025PjSpV/view?usp=sharing) | ./classifier/hair_classification   |
+
+​	face_parsing.pth from: https://github.com/switchablenorms/CelebAMask-HQ/tree/master/face_parsing ([79999_iter.pth](https://drive.google.com/file/d/1eP90uPItdAy1czivugAM3ZK68OdY2pfe/view?usp=sharing))
+
+​	e4e_ffhq_encode.pt from: https://github.com/omertov/encoder4editing
+
+​	model_ir_se50.pth from: https://github.com/orpatashnik/StyleCLIP
+
+The StyleGAN2-ada-Generator.pth contains the same model parameters as the original [stylegan2](https://github.com/NVlabs/stylegan2) pkl model `stylegan2-ffhq-config-f.pkl`.
+
+2. Create conda environment:
+
+   ```
+   conda create -n HairMapper python=3.7
+   activate HairMapper
+   ```
+
+3. [**StyleGAN2-ada requirements**](https://github.com/NVlabs/stylegan2-ada-pytorch): The code relies heavily on custom PyTorch extensions that are compiled on the fly using NVCC. On Windows, the compilation requires Microsoft Visual Studio. We recommend installing [Visual Studio Community Edition](https://visualstudio.microsoft.com/vs/) and adding it into `PATH` using `"C:\Program Files (x86)\Microsoft Visual Studio\<VERSION>\Community\VC\Auxiliary\Build\vcvars64.bat"`.
+
+   Please modify `compiler path` in `./styleGAN2_ada_model/stylegan2_ada/torch_utils/custom_ops.py` according to your own Microsoft Visual Studio installation path (default: `C:\Program Files (x86)\Microsoft Visual Studio`).
+   
+   ```python
+   def _find_compiler_bindir():
+       patterns = [
+           '''
+           	modify the compiler dir according to your own VS installation path
+           ''' 
+       ]
+       for pattern in patterns:
+           matches = sorted(glob.glob(pattern))
+           if len(matches):
+               return matches[-1]
+       return None
+   ```
+   
+3. Then install other dependencies by
+
+   ```
+   pip install torch===1.7.1+cu110 torchvision===0.8.2+cu110 torchaudio===0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+   ```
+
+   ```
+   pip install -r requirements.txt
+   ```
+
+We modified the stylegan-ada pytorch version to output latent codes in `Z, W, W+` and `StyleSpace` more conveniently. 
+
+Since we find that getting those CUDA extensions to run on Windows is a hassle ([stytlegan2-ada issue#97](https://github.com/NVlabs/stylegan2-ada-pytorch/issues/97)), we also modified the stylegan-ada **so that you can choose to use a slow reference implementation** of `upfirdn2d()` and `bias_act()` (slower, but can be directly used without compiling CUDA extensions). 
+
+For those who **can not compile the CUDA extensions successfully**, please set `USING_CUDA_TO_SPEED_UP = False`  in `styleGAN2_ada_model/stylegan2_ada/torch_utils/ops/bias_act.py` and `styleGAN2_ada_model/stylegan2_ada/torch_utils/ops/upfirdn2d.py` to use the slow reference implementation.
+
+# Models
+
+Please fill out this google form for pre-trained models access:
+
+https://forms.gle/a5pRbE3yxEr7sZDm7
+
+Then download and put the pre-trained models to **path**:
+
+| model                                                | path                                   |
+| ---------------------------------------------------- | -------------------------------------- |
+| Final HairMapper (can be applied to female and male) | mapper/checkpoints/final/best_model.pt |
+| Man HairMapper (can only be applied to male)         | mapper/checkpoints/man/best_model.pt   |
 
 
-## Getting started
 
-Download the whole `models` folder from [link](https://drive.google.com/drive/folders/1m517-F1NCTGA159dePs5R5qj02svtX1_?usp=sharing) and put it under the root dir.
+# Testing
 
-Pre-trained networks are stored as `*.pkl` files that can be referenced using local filenames.
+Directly use our pre-trained model for hair removal.
 
+**step1:**
 
-## Generating results
+Real images **should be extracted and aligned using DLib and a function from the original FFHQ dataset preparation step**, you can use the [image align code](https://github.com/Puzer/stylegan-encoder/blob/master/align_images.py) provided by [stylegan-encoder](https://github.com/Puzer/stylegan-encoder).
 
-```.bash
-# Generate videos using pre-trained model
+Please put the aligned real images to **./test_data/origin** (examplar data can be found in ./data/test_data/final/origin).
 
-python gen_videos.py --network models/easy-khair-180-gpc0.8-trans10-025000.pkl \
---seeds 0-3 --grid 2x2 --outdir=out --cfg Head --trunc 0.7
+**step2:**
+
+Then using encoder4editing to get the corresponding latent codes:
 
 ```
-
-```.bash
-# Generate images and shapes (as .mrc files) using pre-trained model
-
-python gen_samples.py --outdir=out --trunc=0.7 --shapes=true --seeds=0-3 \
-    --network models/easy-khair-180-gpc0.8-trans10-025000.pkl
+cd encoder4editing
+python encode.py  --data_dir ../test_data
 ```
 
-## Applications
-```.bash
-# Generate full head reconstruction from a single RGB image.
-# Please refer to ./gen_pti_script.sh
-# For this application we need to specify dataset folder instead of zip files.
-# Segmentation files are not necessary for PTI inversion.
+latent codes will be saved to `./test_data/code`.
 
-./gen_pti_script.sh
+**step3:**
+
+Then run HairMapper:
+
+```python
+cd ../
+python main_mapper.py  --data_dir ./test_data
 ```
 
-```.bash
-# Generate full head interpolation from two seeds.
-# Please refer to ./gen_interpolation.py for the implementation
+If you want to perform an additional diffusion (slower, but can achieve better results):
 
-python gen_interpolation.py --network models/easy-khair-180-gpc0.8-trans10-025000.pkl\
-        --trunc 0.7 --outdir interpolation_out
-```
-
-
-
-## Using networks from Python
-
-You can use pre-trained networks in your own Python code as follows:
-
-```.python
-with open('*.pkl', 'rb') as f:
-    G = pickle.load(f)['G_ema'].cuda()  # torch.nn.Module
-z = torch.randn([1, G.z_dim]).cuda()    # latent codes
-c = torch.cat([cam2world_pose.reshape(-1, 16), intrinsics.reshape(-1, 9)], 1) # camera parameters
-img = G(z, c)['image']                           # NCHW, float32, dynamic range [-1, +1], no truncation
-mask = G(z, c)['image_mask']                    # NHW, int8, [0,255]
-```
-
-The above code requires `torch_utils` and `dnnlib` to be accessible via `PYTHONPATH`. It does not need source code for the networks themselves &mdash; their class definitions are loaded from the pickle via `torch_utils.persistence`.
-
-The pickle contains three networks. `'G'` and `'D'` are instantaneous snapshots taken during training, and `'G_ema'` represents a moving average of the generator weights over several training steps. The networks are regular instances of `torch.nn.Module`, with all of their parameters and buffers placed on the CPU at import and gradient computation disabled by default.
-
-
-## Datasets format
-For training purpose, we can use either zip files or normal folder for image dataset and segmentation dataset. For PTI, we need to use folder.
-
-To compress dataset folder to zip file, we can use [dataset_tool_seg](./dataset_tool_seg.py). 
-
-For example:
-```.bash
-python dataset_tool_seg.py --img_source dataset/testdata_img --seg_source  dataset/testdata_seg --img_dest dataset/testdata_img.zip --seg_dest dataset/testdata_seg.zip --resolution 512x512
-```
-
-
-## Training
-
-Examples of training using `train.py`:
-
-```
-# Train with StyleGAN2 backbone from scratch with raw neural rendering resolution=64, using 8 GPUs.
-# with segmentation mask, trigrid_depth@3, self-adaptive camera pose loss regularizer@10
-
-python train.py --outdir training-runs  --img_data dataset/testdata_img.zip --seg_data dataset/testdata_seg.zip --cfg=ffhq --batch=32 --gpus 8\\
---gamma=1 --gamma_seg=1 --gen_pose_cond=True --mirror=1 --use_torgb_raw=1 --decoder_activation="none" --disc_module MaskDualDiscriminatorV2\\
---bcg_reg_prob 0.2 --triplane_depth 3 --density_noise_fade_kimg 200 --density_reg 0 --min_yaw 0 --max_yaw 180 --back_repeat 4 --trans_reg 10 --gpc_reg_prob 0.7
-
-
-# Second stage finetuning to 128 neural rendering resolution (optional).
-
-python train.py --outdir results --img_data dataset/testdata_img.zip --seg_data dataset/testdata_seg.zip --cfg=ffhq --batch=32 --gpus 8\\
---resume=~/training-runs/experiment_dir/network-snapshot-025000.pkl\\
---gamma=1 --gamma_seg=1 --gen_pose_cond=True --mirror=1 --use_torgb_raw=1 --decoder_activation="none" --disc_module MaskDualDiscriminatorV2\\
---bcg_reg_prob 0.2 --triplane_depth 3 --density_noise_fade_kimg 200 --density_reg 0 --min_yaw 0 --max_yaw 180 --back_repeat 4 --trans_reg 10 --gpc_reg_prob 0.7\\
---neural_rendering_resolution_final=128 --resume_kimg 1000
+```python
+python main_mapper.py  --data_dir ./test_data --diffuse
 ```
 
 
 
 
-## Acknowledgements
 
-We thank Metabrix lab for this highly realistic multi_pose generation.
+# Training
+
+**Considering that our method involves several optimizations and several network trainings, we provide a step-by-step training procedure.**
+
+## Data Preparation (Sec 3.2)
+
+Generate D_0 dataset:
+
+```python
+python step1_generate_data.py --dataset_name D0 --num DatasetSize
+```
+
+Generate D_noise dataset:
+
+```python
+python step1_generate_data.py --dataset_name Dnoise --num DatasetSize --add_noise
+```
+
+Datasets will be saved to `./training_runs/dataset/D0` and `./training_runs/dataset/Dnoise`.
+
+## Boundary Training (Sec 3.3)
+
+There should be enough bald-data in D0 to train a hair separation boundary, but a randomly sampled dataset consists of 10000-images may only contains 100 bald-images. So that **we recommend you to directly use our pre-trained male hair separation boundary in `./data/boundaries/stylegan2_ada/coarse/stylegan2_ffhq_hair_w_male` and gender separation boundary in `./data/boundaries/stylegan2_ada/coarse/stylegan2_ffhq_gender_styleflow`**. 
+
+Or you can train male hair separation boundary on D_0 for yourself. <u>(not recommended)</u>
+
+```python
+python step2_train_man_hair_coarse_boundary.py  --output_dir $HairBoundaryDir$  --dataset_path ./training_runs/dataset/D0
+```
+
+Train gender separation boundary on StyleFlow results. (We prepared the gender transition results in `./data/styleflow_gender_training_data`)
+
+```python
+python step2_train_gender_boundary.py --output_dir $GenderBoundaryDir$ --dataset_path ./data/styleflow_gender_training_data 
+```
+
+
+
+## Male Hair Removal (Sec 3.4)
+
+![Male_Hair_Removal](./imgs/Male_Hair_Removal.PNG)
+
+**For D_0**
+
+```python
+python step3_train_bald_male_data.py  --dataset_name D0 --num 2500
+```
+
+to use your own hair boundary:
+
+```python
+python step3_train_bald_male_data.py --dataset_name D0  --hair_boundary_dir $HairBoundaryDir$ --num 2500
+```
+
+Results will be saved to `./training_runs/male_training/D0`
+
+**For D_noise**
+
+```python
+python step3_train_bald_male_data.py --dataset_name Dnoise --num 2500
+```
+
+to use your own hair boundary:
+
+```python
+python step3_train_bald_male_data.py  --dataset_name Dnoise  --hair_boundary_dir $HairBoundaryDir$  --num 2500
+```
+
+Results will be saved to `./training_runs/male_training/Dnoise`
+
+
+
+## Male Mapper Training (Sec 3.5)
+
+![Male_Mapper_Training](./imgs/Male_Mapper_Training.PNG)
+
+First, prepare training data:
+
+```python
+python step4_male_mapper_data_preparation.py  --dataset_name D0  --noise_dataset_name Dnoise --mapper_name male_mapper
+```
+
+Training data list will be saved to `./training_runs/male_mapper/data`
+
+Train male mapper:
+
+```python
+python train_mapper.py --mapper_name male_mapper --max_steps 52000
+```
+
+
+
+## Female Hair Removal (Sec 3.6)
+
+![Female_Hair_Removal](./imgs/Female_Hair_Removal.PNG)
+
+```python
+python step6_train_bald_female_data.py  --dataset_name D0  --male_mapper_name male_mapper --num 2500 
+```
+
+```python
+python step6_train_bald_female_data.py  --dataset_name Dnoise --male_mapper_name male_mapper --num 2500
+```
+
+Results will be saved to `./training_runs/female_training/D0`
+
+or use the pre-trained male mapper:
+
+```
+python step6_train_bald_female_data.py  --dataset_name D0  --mapper_ckpt_path mapper/checkpoints/man/best_model.pt --num 2500
+```
+
+```
+python step6_train_bald_female_data.py  --dataset_name Dnoise  --mapper_ckpt_path mapper/checkpoints/man/best_model.pt --num 2500
+```
+
+Results will be saved to `./training_runs/female_training/Dnoise`
+
+
+
+## Final Mapper Training (Sec 3.6)
+
+![Final_Mapper_Training](./imgs/Final_Mapper_Training.PNG)
+
+First, prepare training data:
+
+```python
+python step7_final_mapper_data_preparation.py --dataset_name D0 --noise_dataset_name Dnoise --mapper_name final_mapper 
+```
+
+Training data list will be saved to `./training_runs/final_mapper/data`
+
+Train final mapper:
+
+```python
+python train_mapper.py --mapper_name final_mapper --max_steps 26000
+```
+
+## Contact
+
+onethousand@zju.edu.cn / [onethousand1250@gmail.com](mailto:onethousand1250@gmail.com)
+
+## Citation
+
+```
+@InProceedings{Wu_2022_CVPR,
+    author    = {Wu, Yiqian and Yang, Yong-Liang and Jin, Xiaogang},
+    title     = {HairMapper: Removing Hair From Portraits Using GANs},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2022},
+    pages     = {4227-4236}
+}
+```
+
+## Reference and Acknowledgements
+
+We thanks the following works:
+
+[stylegan2-ada-pytorch](https://github.com/NVlabs/stylegan2-ada-pytorch)
+
+[StyleCLIP](https://github.com/orpatashnik/StyleCLIP)
+
+[encoder4editing](https://github.com/omertov/encoder4editing)
+
+[InterFaceGAN](https://github.com/genforce/interfacegan)
+
+[idinvert](https://github.com/genforce/idinvert)
+
+```
+@InProceedings{Patashnik_2021_ICCV,
+    author    = {Patashnik, Or and Wu, Zongze and Shechtman, Eli and Cohen-Or, Daniel and Lischinski, Dani},
+    title     = {StyleCLIP: Text-Driven Manipulation of StyleGAN Imagery},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2021},
+    pages     = {2085-2094}
+}
+@inproceedings{zhu2020indomain,
+  title     = {In-domain GAN Inversion for Real Image Editing},
+  author    = {Zhu, Jiapeng and Shen, Yujun and Zhao, Deli and Zhou, Bolei},
+  booktitle = {Proceedings of European Conference on Computer Vision (ECCV)},
+  year      = {2020}
+}
+@inproceedings{shen2020interpreting,
+  title     = {Interpreting the Latent Space of GANs for Semantic Face Editing},
+  author    = {Shen, Yujun and Gu, Jinjin and Tang, Xiaoou and Zhou, Bolei},
+  booktitle = {CVPR},
+  year      = {2020}
+}
+@article{tov2021designing,
+  title={Designing an Encoder for StyleGAN Image Manipulation},
+  author={Tov, Omer and Alaluf, Yuval and Nitzan, Yotam and Patashnik, Or and Cohen-Or, Daniel},
+  journal={arXiv preprint arXiv:2102.02766},
+  year={2021}
+}
+@inproceedings{Karras2020ada,
+  title     = {Training Generative Adversarial Networks with Limited Data},
+  author    = {Tero Karras and Miika Aittala and Janne Hellsten and Samuli Laine and Jaakko Lehtinen and Timo Aila},
+  booktitle = {Proc. NeurIPS},
+  year      = {2020}
+}
+```
 
